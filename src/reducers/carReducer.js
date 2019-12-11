@@ -1,3 +1,5 @@
+import {BUY_ITEM} from '../actions/carActions'
+
 const initialState = {
   additionalPrice: 0,
   car: {
@@ -16,8 +18,25 @@ const initialState = {
 };
 
 export const carReducer = (state = initialState, action) => {
-  // console.log('state from reducer: ', state);
   switch(action.type) {
+    case BUY_ITEM:
+      const [newFeature] = state.additionalFeatures.filter( item => {
+        return item.id === action.payload;
+      })
+      return {
+        ...state,
+        additionalPrice: state.additionalPrice + newFeature.price,
+        car: {
+          ...state.car,
+          features: [
+            ...state.car.features,
+            newFeature
+          ]
+        },
+        additionalFeatures: state.additionalFeatures.filter( item => {
+          return item.id !== newFeature.id;
+        })
+      }
     default:
       return state;
   }
